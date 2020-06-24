@@ -55,15 +55,15 @@ object Resposta3 {
     dfSQLFull.createOrReplaceTempView("View4Full")
 
     val ResultFinal = spark.sql(
-      "SELECT '2009' AS ano, month(pickup_datetime) AS mes, count() AS qtd FROM ViewDf2009 " +
+      "SELECT '2009' AS ano, month(pickup_datetime) AS mes, count(*) AS qtd FROM ViewDf2009 " +
       "WHERE payment_type LIKE 'CASH%' " +
-      "GROUP BY ano, mes UNION ALL SELECT '2010' AS ano, month(pickup_datetime) AS mes, count() AS qtd " +
+      "GROUP BY ano, mes UNION ALL SELECT '2010' AS ano, month(pickup_datetime) AS mes, count(*) AS qtd " +
       "FROM ViewDf2010 WHERE payment_type " +
       "LIKE 'CASH%' GROUP BY ano, mes UNION ALL " +
-      "SELECT '2011' AS ano, month(pickup_datetime) AS mes, count() AS qtd " +
+      "SELECT '2011' AS ano, month(pickup_datetime) AS mes, count(*) AS qtd " +
       "FROM ViewDf2011 WHERE payment_type " +
       "LIKE 'CASH%' GROUP BY ano, mes UNION ALL " +
-      "SELECT '2012' AS ano, month(pickup_datetime) AS mes, count() AS qtd " +
+      "SELECT '2012' AS ano, month(pickup_datetime) AS mes, count(*) AS qtd " +
       "FROM ViewDf2012 WHERE payment_type " +
       "LIKE 'CASH%' GROUP BY ano, mes"
     )
@@ -73,5 +73,6 @@ object Resposta3 {
     ResultFinal.write.mode(SaveMode.Overwrite).partitionBy("mes").parquet("src\\main\\resources\\data\\s3\\resposta3mes.parquet")
     ResultFinal.repartition(1).write.mode(SaveMode.Overwrite).csv("src\\main\\resources\\data\\s3\\resposta3.csv")
     ResultFinal.show()
+    spark.stop
   }
 }
