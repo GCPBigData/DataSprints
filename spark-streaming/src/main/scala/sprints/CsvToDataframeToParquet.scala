@@ -1,6 +1,6 @@
 package sprints
 
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{SaveMode, SparkSession}
 
 /**
  * CSV ingestion in a dataframe.
@@ -40,6 +40,16 @@ object CsvToDataframeToParquet {
        .load("src\\main\\resources\\data\\s3\\data-sample_data-nyctaxi-trips-2012-json_corrigido.json")
      df2012.write.parquet("src\\main\\resources\\data\\s3\\data-sample_data-nyctaxi-trips-2012-json_corrigido.parquet")
      df2012.show(10)
+
+      //Partition
+      df2012.write
+        .format("json")
+        .mode(SaveMode.Overwrite)
+        .option("path", "src\\main\\resources\\data\\s3\\data-sample_data-nyctaxi-trips-2012-json_corrigido.parquet")
+        .partitionBy( "OP_CARRIER", "ORIGIN")
+        .option("maxRecordsPerFile", 10000)
+        .save()
+
     spark.stop
   }
 }

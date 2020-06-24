@@ -78,8 +78,8 @@ object Resposta2 {
       "LEFT JOIN ViewDfVendor ON ViewResult.vendor_id = ViewDfVendor.vendor_id")
 
     ResultFinal.show()
-
     ResultFinal.write.parquet("src\\main\\resources\\data\\s3\\resposta2.parquet")
+    ResultFinal.write.csv("src\\main\\resources\\data\\s3\\resposta2.csv")
     spark.stop
   }
 }

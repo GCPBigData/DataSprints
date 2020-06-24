@@ -1,6 +1,6 @@
 package sprints
 
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{SaveMode, SparkSession}
 
 /**
  * 3 . Faça um histograma da distribuição mensal, nos 4 anos, de corridas pagas em dinheiro; 
@@ -54,5 +54,24 @@ object Resposta3 {
     //Cria uma view com todos os arquivos parquet agrupados
     dfSQLFull.createOrReplaceTempView("View4Full")
 
+    val ResultFinal = spark.sql(
+      "SELECT '2009' AS ano, month(pickup_datetime) AS mes, count() AS qtd FROM ViewDf2009 " +
+      "WHERE payment_type LIKE 'CASH%' " +
+      "GROUP BY ano, mes UNION ALL SELECT '2010' AS ano, month(pickup_datetime) AS mes, count() AS qtd " +
+      "FROM ViewDf2010 WHERE payment_type " +
+      "LIKE 'CASH%' GROUP BY ano, mes UNION ALL " +
+      "SELECT '2011' AS ano, month(pickup_datetime) AS mes, count() AS qtd " +
+      "FROM ViewDf2011 WHERE payment_type " +
+      "LIKE 'CASH%' GROUP BY ano, mes UNION ALL " +
+      "SELECT '2012' AS ano, month(pickup_datetime) AS mes, count() AS qtd " +
+      "FROM ViewDf2012 WHERE payment_type " +
+      "LIKE 'CASH%' GROUP BY ano, mes"
+    )
+
+    ResultFinal.show()
+    ResultFinal.write.mode(SaveMode.Overwrite).parquet("src\\main\\resources\\data\\s3\\resposta3.parquet")
+    ResultFinal.write.mode(SaveMode.Overwrite).partitionBy("ano").parquet("src\\main\\resources\\data\\s3\\resposta3ano.parquet")
+    ResultFinal.write.mode(SaveMode.Overwrite).partitionBy("mes").parquet("src\\main\\resources\\data\\s3\\resposta3mes.parquet")
+    ResultFinal.repartition(1).write.mode(SaveMode.Overwrite).csv("src\\main\\resources\\data\\s3\\resposta3.csv")
   }
 }
