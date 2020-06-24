@@ -3,8 +3,6 @@ import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions.{col, to_timestamp,date_format}
 
 /**
- * CSV ingestion in a dataframe.
- * Parquet Save.
  *
  * @author web2ajax@gmail.com
  */
@@ -12,7 +10,7 @@ object DayWeekAndWeekMonth extends App {
 
   val spark: SparkSession = SparkSession.builder()
     .master("local")
-    .appName("SparkByExamples.com")
+    .appName("Spark")
     .getOrCreate()
   spark.sparkContext.setLogLevel("ERROR")
 

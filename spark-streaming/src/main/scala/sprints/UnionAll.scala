@@ -45,6 +45,5 @@ object UnionAll {
   ResultFinal.write.mode(SaveMode.Overwrite).parquet("src\\main\\resources\\data\\s3\\viewUnion.parquet")
   ResultFinal.repartition(1).write.mode(SaveMode.Overwrite).csv("src\\main\\resources\\data\\s3\\viewUnion.csv")
   ResultFinal.show()
-
 }
 }
