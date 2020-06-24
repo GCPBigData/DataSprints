@@ -68,10 +68,10 @@ object Resposta3 {
       "LIKE 'CASH%' GROUP BY ano, mes"
     )
 
-    ResultFinal.show()
     ResultFinal.write.mode(SaveMode.Overwrite).parquet("src\\main\\resources\\data\\s3\\resposta3.parquet")
     ResultFinal.write.mode(SaveMode.Overwrite).partitionBy("ano").parquet("src\\main\\resources\\data\\s3\\resposta3ano.parquet")
     ResultFinal.write.mode(SaveMode.Overwrite).partitionBy("mes").parquet("src\\main\\resources\\data\\s3\\resposta3mes.parquet")
     ResultFinal.repartition(1).write.mode(SaveMode.Overwrite).csv("src\\main\\resources\\data\\s3\\resposta3.csv")
+    ResultFinal.show()
   }
 }

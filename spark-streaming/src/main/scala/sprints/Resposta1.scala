@@ -1,6 +1,6 @@
 package sprints
 
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{SaveMode, SparkSession}
 
 /**
  * 1 . Qual a distância média percorrida por viagens com no máximo 2 passageiros.
@@ -51,9 +51,10 @@ object Resposta1 {
     dfSQLFull.createOrReplaceTempView("dfSQLFull")
 
     val dfSQLViews = spark.sql("SELECT ROUND(AVG(trip_distance)) media_KM FROM dfSQLFull vp WHERE vp.passenger_count <= 2")
-    dfSQLViews.show()
 
-    dfSQLViews.write.parquet("src\\main\\resources\\data\\s3\\resposta1.parquet")
-    spark.stop
+     dfSQLViews.write.mode(SaveMode.Overwrite).parquet("src\\main\\resources\\data\\s3\\resposta1.parquet")
+     dfSQLViews.repartition(1).write.mode(SaveMode.Overwrite).csv("src\\main\\resources\\data\\s3\\resposta1.csv")
+     dfSQLViews.show()
+     spark.stop
   }
 }

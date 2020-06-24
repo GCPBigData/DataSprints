@@ -1,6 +1,6 @@
 package sprints
 
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{SaveMode, SparkSession}
 
  /**
  * 4 . Façaumgráficodesérietemporalcontandoaquantidadedegorjetasdecadadia,nos               
@@ -57,10 +57,10 @@ object Resposta4 extends UnionAll {
 
     val dfSQLViews = spark.sql("SELECT TO_DATE(dropoff_datetime), " +
       "TO_DATE(dropoff_datetime), tip_amount FROM dfSQLFull ORDER BY dropoff_datetime DESC LIMIT 3")
-    dfSQLViews.show()
 
-    //dfSQLViews.write.parquet("src\\main\\resources\\data\\s3\\resposta4.parquet")
-    dfSQLViews.write.csv("src\\main\\resources\\data\\s3\\resposta4.csv")
+    dfSQLViews.write.mode(SaveMode.Overwrite).parquet("src\\main\\resources\\data\\s3\\resposta4.parquet")
+    dfSQLViews.repartition(1).write.mode(SaveMode.Overwrite).csv("src\\main\\resources\\data\\s3\\resposta4.csv")
+    dfSQLViews.show()
     spark.stop
   }
  }
