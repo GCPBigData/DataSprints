@@ -8,7 +8,7 @@ import org.apache.spark.sql.{SaveMode, SparkSession}
  *
  * @author web2ajax@gmail.com
  */
-object Resposta4 extends UnionAll {
+object Resposta4 {
 
   def main(args: Array[String]): Unit = {
 

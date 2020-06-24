@@ -1,8 +1,10 @@
 package sprints
 
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{SaveMode, SparkSession}
 
-class UnionAll {
+object UnionAll {
+
+  def main(args: Array[String]): Unit = {
 
   val spark = SparkSession.builder
     .appName("CSV to Dataset")
@@ -34,9 +36,15 @@ class UnionAll {
     .createOrReplaceTempView("ViewDf2012")
 
   //unifica todos arquivos parquet
-  val dfSQLFull = spark.sql("SELECT * FROM ViewDf2009 UNION ALL " +
+  val ResultFinal = spark.sql("SELECT * FROM ViewDf2009 UNION ALL " +
     "SELECT * FROM ViewDf2010 UNION ALL " +
     "SELECT * FROM ViewDf2011 UNION ALL " +
     "SELECT * FROM ViewDf2012 ORDER BY vendor_id")
 
+  ResultFinal.createOrReplaceTempView("ViewSQLFull")
+  ResultFinal.write.mode(SaveMode.Overwrite).parquet("src\\main\\resources\\data\\s3\\viewUnion.parquet")
+  ResultFinal.repartition(1).write.mode(SaveMode.Overwrite).csv("src\\main\\resources\\data\\s3\\viewUnion.csv")
+  ResultFinal.show()
+
+}
 }
